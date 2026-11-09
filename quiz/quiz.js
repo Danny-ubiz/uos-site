@@ -21,6 +21,12 @@ function fill(s){
   var c = ctx();
   return String(s).replace(/\{(\w+)\}/g, function(m,k){ return c[k] != null ? c[k] : m });
 }
+/* הצרכים שמוצגים תלויים בסוג העסק, וגם התווית יכולה להשתנות לפי הסוג */
+function typeNeeds(){
+  var t = by(TYPES, st.type) || TYPES[TYPES.length-1];
+  return (t.needs || NEEDS.map(function(x){return x.id})).map(function(id){return by(NEEDS,id)}).filter(Boolean);
+}
+function needLabel(x){ return fill((x.lab && x.lab[st.type]) || x.label) }
 
 function progress(n){
   var h = '<div class="prog" role="progressbar" aria-valuemin="1" aria-valuemax="'+TOTAL+'" aria-valuenow="'+n+'">';
@@ -45,8 +51,8 @@ function intro(){
   app.innerHTML =
     '<div class="intro rise"><div><span class="kick"><i class="tg"></i>שש שאלות קצרות</span>'+
     '<h1>איך ייראה הבוקר שלכם<br><em>עם עוזרים?</em></h1>'+
-    '<p class="lead">ספרו לנו על העסק ועל מה שמעיק, ותראו איזה עוזר לוקח מה, ואיך זה ייראה אצלכם.</p>'+
-    '<div class="facts"><span><b>שש עוזרים</b>תחום לכל אחד</span><span><b>אתם מאשרים</b>לפני כל דבר שיוצא</span></div>'+
+    '<p class="lead">ספרו לנו על העסק ועל מה שלוקח לכם זמן, ותראו איזה עוזר יכול לקחת את זה, ואיך זה ייראה אצלכם.</p>'+
+    '<div class="facts"><span><b>שישה עוזרים</b>לכל אחד תחום משלו</span><span><b>אתם מאשרים</b>כל דבר לפני שהוא יוצא</span></div>'+
     '<div class="bar"><button class="btn" data-act="start">מתחילים</button></div></div>'+
     '<div class="art"><img src="img/team6.webp" alt="הצוות: שישה עוזרים"></div></div>';
 }
@@ -62,16 +68,16 @@ function head(t,l){ return '<div class="head"><h2>'+t+'</h2><p class="lead">'+l+
 function question(n, again){
   var h = progress(n), body = '';
   if (n===1){
-    h += head('איזה עסק יש לכם?','בחרו את הקרוב ביותר. לא חייב להיות מדויק.') + opts(TYPES, st.type);
+    h += head('איזה עסק יש לכם?','בחרו את מה שהכי קרוב. לא חייב להיות מדויק.') + opts(TYPES, st.type);
   } else if (n===2){
     h += head('כמה אנשים עובדים בעסק?','כולל אתם.') + opts(SIZES, st.size);
   } else if (n===3){
     var full = st.needs.length>=2;
-    h += head('מה הכי מעיק או גוזל זמן?','בחרו עד שני דברים. אם זה לא ברשימה, תוכלו לספר לנו בסוף.');
+    h += head('מה לוקח לכם הכי הרבה זמן?','בחרו עד שני דברים. אם זה לא ברשימה, בחרו "משהו אחר".');
     h += '<div class="opts">';
-    NEEDS.forEach(function(x){
+    typeNeeds().forEach(function(x){
       var on = st.needs.indexOf(x.id)>-1;
-      h += '<button class="opt" data-id="'+x.id+'" aria-pressed="'+on+'"'+(full&&!on?' disabled':'')+'><i class="tg"></i><span>'+esc(fill(x.label))+'</span></button>';
+      h += '<button class="opt" data-id="'+x.id+'" aria-pressed="'+on+'"'+(full&&!on?' disabled':'')+'><i class="tg"></i><span>'+esc(needLabel(x))+'</span></button>';
     });
     h += '</div>';
     body = '<div class="bar">'+backBtn()+'<button class="btn" data-act="next" '+(st.needs.length?'':'disabled')+'>המשך</button><span class="cnt">נבחרו '+st.needs.length+' מתוך 2</span></div>';
@@ -79,13 +85,13 @@ function question(n, again){
     h += head('איך זה מרגיש היום?','בחרו את מה שהכי קרוב.') + opts(FEELS, st.feel);
   } else if (n===5){
     var fullT = st.tools.length>=3;
-    h += head('איפה הדברים קורים אצלכם?','בחרו עד שלושה מקומות.')+'<div class="opts">'+TOOLS.map(function(o){
+    h += head('איפה אתם מנהלים את העסק היום?','בחרו עד שלושה.')+'<div class="opts">'+TOOLS.map(function(o){
       var on = st.tools.indexOf(o.id)>-1;
       return '<button class="opt" data-id="'+o.id+'" aria-pressed="'+on+'"'+(fullT&&!on?' disabled':'')+'><i class="tg"></i><span>'+esc(o.label)+'</span></button>';
     }).join('')+'</div>';
     body = '<div class="bar">'+backBtn()+'<button class="btn" data-act="next" '+(st.tools.length?'':'disabled')+'>המשך</button><span class="cnt">נבחרו '+st.tools.length+' מתוך 3</span></div>';
   } else if (n===6){
-    h += head('ואם יתפנה לכם זמן, למה הוא ילך?','זו השאלה האחרונה.') + opts(FREED, st.freed);
+    h += head('ואם יתפנה לכם זמן, על מה תרצו לשים אותו?','זו השאלה האחרונה.') + opts(FREED, st.freed);
   }
   if (!body && n!==1) body = '<div class="bar">'+backBtn()+'</div>';
   var num = n<10?'0'+n:n;
@@ -94,10 +100,10 @@ function question(n, again){
 
 function nameStep(){
   app.innerHTML = '<div class="q rise"><div class="bignum" aria-hidden="true">07</div>'+
-    head('איך לקרוא לכם?','לא חובה. השם ישובץ בתוצאה כדי שתראו אותה כמו שהיא תיראה אצלכם.')+
+    head('איך לקרוא לכם?','לא חובה. נכניס את השמות לתוצאה, כדי שתראו איך זה ייראה אצלכם.')+
     '<div class="two"><label class="field"><span>השם שלכם</span><input id="fName" value="'+esc(st.name)+'" autocomplete="given-name"></label>'+
     '<label class="field"><span>שם העסק</span><input id="fBiz" value="'+esc(st.biz)+'" autocomplete="organization"></label></div>'+
-    '<div class="bar">'+backBtn()+'<button class="btn" data-act="make">שלח</button></div></div>';
+    '<div class="bar">'+backBtn()+'<button class="btn" data-act="make">הראו לי את התוצאה</button></div></div>';
 }
 
 function chosenNeeds(){
@@ -110,10 +116,10 @@ function loading(){
   var needs = chosenNeeds();
   var seen = {}, crew = [];
   needs.forEach(function(n){ if(!seen[n.a]){seen[n.a]=1; crew.push(n.a)} });
-  app.innerHTML = '<div class="load rise"><div class="sw" aria-hidden="true"></div><h2>הצוות מתייצב</h2><div class="crew">'+
+  app.innerHTML = '<div class="load rise"><div class="sw" aria-hidden="true"></div><h2>הצוות שלכם מתארגן</h2><div class="crew">'+
     crew.map(function(k){return '<figure><img src="img/'+k+'-face.webp" alt=""><figcaption>'+WHO[k].n+'</figcaption></figure>'}).join('')+
     '</div><div class="step-line" id="stepLine"></div></div>';
-  var lines = ['קוראים את מה שסיפרתם','מתאימים לעסק שלכם','מכינים את הבוקר'];
+  var lines = ['מני עובר על התשובות שלכם','ומתאים את העוזרים לעסק','עוד רגע זה מוכן'];
   var figs = app.querySelectorAll('figure'), li = $('#stepLine');
   if (reduce){ go(9); return; }
   figs.forEach(function(f,i){ setTimeout(function(){f.classList.add('in')}, 250+i*420) });
@@ -143,7 +149,9 @@ function cardHtml(n, i){
   if (ex){
     right = demoHtml(n);
   } else {
-    right = '<div class="near"><p><b>אצלנו</b> '+w.n+' '+esc(fill(n.ours))+'.</p><p><b>אצלכם נוכל לבנות:</b> '+esc(fill(n.yours))+'.</p></div>';
+    right = n.fit==='custom'
+      ? '<div class="near"><p><b>בצוות שלנו</b> '+w.n+' '+esc(fill(n.ours))+'.</p><p><b>אצלכם:</b> '+esc(fill(n.yours))+'.</p></div>'
+      : '<div class="near"><p><b>בצוות שלנו</b> '+w.n+' '+esc(fill(n.ours))+'.</p><p><b>אצלכם נוכל להוסיף:</b> '+esc(fill(n.yours))+'.</p></div>';
   }
   return '<article class="card"><div>'+left+'</div><div>'+right+'</div></article>';
 }
@@ -154,7 +162,7 @@ function listHe(a){ if(a.length<2) return a.join(''); return a.slice(0,-1).join(
 function labs(arr,list,key){return arr.map(function(id){var o=by(list,id);return o?(o[key||'label']||''):''})}
 function summaryObj(){
   var t=by(TYPES,st.type),s=by(SIZES,st.size),f=by(FEELS,st.feel),r=by(FREED,st.freed);
-  return {type:t&&t.label,size:s&&s.label,needs:st.needs.map(function(id){return fill(by(NEEDS,id).label)}),feel:f&&f.label,tools:labs(st.tools,TOOLS),freed:r&&r.label,name:st.name,biz:st.biz};
+  return {type:t&&t.label,size:s&&s.label,needs:st.needs.map(function(id){return needLabel(by(NEEDS,id))}),feel:f&&f.label,tools:labs(st.tools,TOOLS),freed:r&&r.label,name:st.name,biz:st.biz};
 }
 function summaryText(){
   var o=summaryObj();
@@ -163,9 +171,9 @@ function summaryText(){
 function result(){
   var needs = chosenNeeds(), sz = by(SIZES,st.size), fl = by(FEELS,st.feel), fr = by(FREED,st.freed);
   var title = (st.name?esc(st.name)+', ':'')+'כך ייראה הבוקר'+(st.biz?' ב'+esc(st.biz):' שלכם');
-  var tools = st.tools.map(function(id){return by(TOOLS,id).t});
+  var tools = st.tools.filter(function(id){return id!=='head'}).map(function(id){return by(TOOLS,id).t});
   var head = st.tools.indexOf('head')>-1;
-  var toolsLine = 'נתחיל מהמקומות שבהם הדברים קורים אצלכם: '+listHe(tools)+'. נבדוק יחד מה אפשר לחבר.'+(head?' ומה שיושב בראש ובפתקים, נוציא קודם לרשימה אחת.':'');
+  var toolsLine = (tools.length?'אצלכם הדברים קורים '+listHe(tools)+', ומשם נתחיל. בשיחה נבדוק מה אפשר לחבר לעוזרים.':'')+(head?(tools.length?' ואת':'את')+' מה שיושב לכם בראש ובפתקים נרכז קודם ברשימה אחת.':'');
   var exact = needs.filter(function(n){return n.fit==='exact'});
   var names = []; exact.forEach(function(n){ var nm=WHO[n.a].n; if(names.indexOf(nm)<0) names.push(nm) });
   var ctaTitle = names.length ? 'רוצים שנכין לכם את '+listHe(names)+'?' : 'בואו נבנה את זה יחד';
@@ -175,8 +183,8 @@ function result(){
     '<p class="sub">'+esc(sz.line)+' '+esc(fl.line)+'</p>'+
     needs.map(cardHtml).join('')+
     '<p class="line">'+esc(toolsLine)+'</p>'+
-    '<p class="line">'+esc(sz.who)+' כל דבר לפני שהוא יוצא. '+esc(fr.line)+'</p>'+
-    '<p class="note">זו רק דוגמה להמחשה, לפי התשובות שלכם. אפשר להתאים הכול אישית: בפועל העוזר נבנה על העסק האמיתי שלכם ועובד רק אחרי שאתם מאשרים.</p>'+
+    '<p class="line">אתם מאשרים כל דבר לפני שהוא יוצא. '+esc(fr.line)+'</p>'+
+    '<p class="note">זו דוגמה להמחשה לפי התשובות שלכם. בפועל נבנה את העוזרים על העסק שלכם, והם יתחילו לעבוד רק אחרי שתאשרו.</p>'+
     '<div class="sv" id="qzx"><button class="btn" data-act="contact">תכינו לי את זה</button><button class="btn ghost" data-act="print">שמירה או הדפסה</button><button class="btn ghost" data-act="restart">להתחיל מחדש</button></div></section>';
   post({type:'qz-done',quiz:summaryObj(),summary:summaryText()});
 
@@ -194,14 +202,14 @@ app.addEventListener('click', function(e){
   if (act==='approve'){
     var i = b.getAttribute('data-i'), d = $('#done'+i);
     b.classList.add('hide'); b.nextElementSibling.classList.add('hide');
-    d.classList.remove('hide'); d.textContent = 'אושר. העוזר הכין, אתם החלטתם.'; return;
+    d.classList.remove('hide'); d.textContent = 'אושר. העוזר הכין, ואתם החלטתם.'; return;
   }
   if (act==='tweak'){ var t = b.closest('.ap').previousElementSibling; t.contentEditable = 'true'; t.focus(); b.textContent = 'אפשר לערוך את הטקסט'; b.disabled = true; return; }
   if (act==='contact'){ post({type:'qz-contact'}); return; }
   if (act==='print'){ window.print(); return; }
   if (act==='form'){ $('#lead').classList.remove('hide'); b.classList.add('hide'); var f = $('#lead input[name=email]'); f.focus(); return; }
   if (!id) return;
-  if (s===1){ st.type = id; return setTimeout(function(){go(2)}, 160); }
+  if (s===1){ st.type = id; var ok = typeNeeds().map(function(x){return x.id}); st.needs = st.needs.filter(function(n){return ok.indexOf(n)>-1}); return setTimeout(function(){go(2)}, 160); }
   if (s===2){ st.size = id; return setTimeout(function(){go(3)}, 160); }
   if (s===4){ st.feel = id; return setTimeout(function(){go(5)}, 160); }
   if (s===6){ st.freed = id; return setTimeout(function(){go(7)}, 160); }
