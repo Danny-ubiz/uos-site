@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>חבילת הסקילים של UOS לקלוד</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0D1117">
+<style>
+@font-face{font-family:AS;src:url(fonts/Assistant.ttf);font-weight:200 800;font-display:swap}
+@font-face{font-family:PX;src:url(fonts/Poppins-ExtraBold.ttf);font-display:swap}
+:root{--bk:#0D1117;--s2:#171E28;--s3:#202A37;--s4:#2B3646;--soft:#B4BECB;--dim:#8794A5;--tq:#1FB0CC;--tqd:#0A6F86;--gray:#F2F4F8;--font:AS,"Assistant","Arial Hebrew",system-ui,sans-serif;--px:PX,Poppins,sans-serif;--cw:244px;--ch:398px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bk);color:#fff;font-family:var(--font);font-size:18px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:clip}
+body.lock{overflow:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:inherit}
+:focus-visible{outline:3px solid var(--tq);outline-offset:4px}
+h1,h2,h3{font-weight:800;line-height:1.1;letter-spacing:-.01em;text-wrap:balance}
+em{font-style:normal;color:var(--tq)}
+
+/* ראש הדף */
+.top{text-align:center;padding:32px 24px 0}
+.top img{height:44px;width:auto;display:block;margin:0 auto 24px}
+.top h1{font-size:clamp(38px,4.8vw,66px);max-width:16em;margin:0 auto 16px}
+.top p{color:var(--soft);font-size:clamp(18px,1.7vw,22px);max-width:28em;margin:0 auto}
+
+/* במה: קלפים ועוז */
+.stage{position:relative;overflow-x:clip;overflow-y:visible;display:flex;justify-content:center;align-items:center;min-height:min(640px,calc(100svh - 230px));padding:20px 24px 24px;min-height:580px}
+.stage:before{content:"";position:absolute;inset:-60px 0 0;background:radial-gradient(ellipse 52% 60% at 50% 55%,rgba(31,176,204,.5),rgba(31,176,204,.16) 48%,rgba(13,17,23,0) 74%);pointer-events:none}
+.deck{position:relative;z-index:2;display:flex;gap:0;align-items:flex-end;padding:30px 0 0;perspective:1400px;}
+.card{position:relative;flex:none;width:var(--cw);height:var(--ch);margin:0 -22px;border-radius:14px;overflow:hidden;color:#fff;text-align:center;
+  --lift:0px;--r:calc(var(--k)*4.4deg);--y:calc(var(--k)*var(--k)*14px);
+  transform-origin:50% 160%;transform:translateY(var(--y)) rotate(var(--r)) translateY(var(--lift));
+  background:#080c12;
+  box-shadow:-22px 6px 30px -4px rgba(0,0,0,.85),14px 6px 24px -6px rgba(0,0,0,.6),0 40px 50px -26px rgba(0,0,0,.9);
+  transition:transform .5s cubic-bezier(.25,1.3,.4,1),box-shadow .4s;animation:deal .9s cubic-bezier(.2,.9,.3,1.1) calc(var(--n)*.09s + .15s) backwards}
+.card .art{position:absolute;left:9%;top:48px;width:84%;left:8%;height:calc(100% - 160px);object-fit:contain;object-position:50% 50%;-webkit-mask-image:radial-gradient(ellipse 74% 72% at 50% 50%,#000 64%,transparent 100%);mask-image:radial-gradient(ellipse 74% 72% at 50% 50%,#000 64%,transparent 100%);transition:transform .6s cubic-bezier(.3,1.4,.5,1)}
+.card:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,17,23,0) 70%,rgba(13,17,23,.7) 100%);pointer-events:none}
+.card:before{content:"";position:absolute;inset:0;z-index:2;background:linear-gradient(112deg,rgba(255,255,255,0) 34%,rgba(255,255,255,.16) 47%,rgba(255,255,255,0) 60%);background-size:260% 100%;background-position:100% 0;transition:background-position .9s ease;pointer-events:none}
+.card:hover,.card:focus-visible{--lift:-44px;z-index:4;box-shadow:-22px 6px 30px -4px rgba(0,0,0,.85),0 56px 70px -28px rgba(0,0,0,.92),0 0 70px -8px rgba(31,176,204,.55)}
+.card:hover .art,.card:focus-visible .art{transform:scale(1.07)}
+.card:hover:before,.card:focus-visible:before{background-position:0 0}
+.card.hide{opacity:0}
+.card:active{--lift:-34px}
+@keyframes deal{from{opacity:0;transform:translateY(90px) rotate(0)}}
+.cn{position:absolute;z-index:3;font-family:var(--px);font-size:28px;line-height:1;color:#fff;direction:ltr;text-shadow:0 2px 10px rgba(0,0,0,.55)}
+.cn.ct{top:18px;right:20px}
+
+.cdesc{position:absolute;z-index:3;left:14px;right:14px;bottom:40px;font-size:14px;font-weight:500;line-height:1.3;color:#C4CEDA}
+.cname{position:absolute;z-index:3;left:0;right:0;bottom:66px;font-size:25px;font-weight:800;line-height:1.1;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+
+/* עוז */
+.oz{position:absolute;z-index:1;left:0;bottom:20px;height:470px;aspect-ratio:327/870}
+.oz .imgs{position:relative;width:100%;height:100%;animation:breathe 4.5s ease-in-out infinite;transform-origin:50% 100%}
+.oz img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .18s}
+.oz[data-pose=stand] .p-stand,.oz[data-pose=think] .p-think,.oz[data-pose=up] .p-up{opacity:1}
+@keyframes breathe{50%{transform:translateY(-5px)}}
+.th{position:absolute;top:-124px;left:50%;width:250px;margin-left:-100px;background:rgba(255,255,255,.14);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);color:#fff;border-radius:24px;padding:12px 16px;font-weight:700;font-size:15px;line-height:1.35;box-shadow:0 18px 36px -14px rgba(0,0,0,.7);opacity:0;transform:translateY(14px) scale(.6);transform-origin:50% 100%;pointer-events:none;transition:opacity .35s,transform .5s cubic-bezier(.3,1.6,.5,1);z-index:5}
+.th.on{opacity:1;transform:none}
+.th b{display:block;color:var(--tq);font-size:12.5px;margin-bottom:2px}
+.th:before,.th:after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.14)}
+.th:before{width:14px;height:14px;bottom:-20px;left:50%}
+.th:after{width:8px;height:8px;bottom:-32px;left:47%}
+
+/* חימום */
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+.warm{padding:88px 0 0;text-align:center}
+.warm h2{font-size:clamp(38px,4.8vw,66px);margin:0 auto 20px;color:#fff}
+.warm .sub{color:var(--soft);font-size:clamp(18px,1.7vw,22px);max-width:30em;margin:0 auto 44px;line-height:1.55;text-wrap:balance}
+.rows{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:8px}
+.rw{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:16px 0}
+.rw .tx{font-size:clamp(22px,3vw,36px);font-weight:800;line-height:1.15;text-align:start}
+.rw .tx span{background:linear-gradient(var(--tq),var(--tq)) no-repeat 100% 56%/0% 5px;transition:background-size .7s cubic-bezier(.6,0,.2,1) calc(var(--d,0s) + .3s),color .5s calc(var(--d,0s) + .5s)}
+.rw.in .tx span{background-size:100% 5px;color:#6E7B8C}
+.rw .tg{flex:none;background:var(--tq);color:var(--bk);border-radius:99px;padding:8px 20px;font-weight:800;font-size:clamp(15px,1.5vw,19px);opacity:0;transform:translateX(-14px) scale(.9);transition:opacity .4s calc(var(--d,0s) + 1s),transform .5s cubic-bezier(.3,1.5,.5,1) calc(var(--d,0s) + 1s)}
+.rw.in .tg{opacity:1;transform:none}
+.rw.joke .tg{background:var(--s4);color:#fff}
+.warm .end em{display:block;margin-top:6px;color:#fff}
+.warm .end{text-wrap:balance;margin:40px auto 0;max-width:26em;font-size:clamp(20px,2.2vw,28px);font-weight:800;line-height:1.3}
+
+/* התקנה */
+.inst{text-align:center;padding:72px 0 40px}
+.inst h2{font-size:clamp(38px,4.8vw,66px);margin-bottom:36px}
+.steps{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:0;max-width:900px;margin:0 auto 40px}
+.st1{background:var(--s2);border-radius:24px;padding:24px 18px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;height:100%}
+.st1 b{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:var(--tq);color:var(--bk);font-family:var(--px);font-size:18px;margin-bottom:6px}
+.st1 strong{font-size:20px;font-weight:800}
+.st1 span{color:var(--soft);font-size:15.5px;line-height:1.4}
+.st1.last{background:var(--tq);color:#0D1117}
+.st1.last b{background:#fff;color:#0D1117}
+.st1.last span{color:#3A4756;font-weight:600}
+.sep{position:relative;display:block;width:64px;height:4px;border-radius:4px;background:var(--s4)}
+.sep:after{content:"";position:absolute;left:-4px;top:50%;margin-top:-8px;width:0;height:0;border-style:solid;border-width:8px 12px 8px 0;border-color:transparent var(--tq) transparent transparent;border-radius:3px}
+.sep:before{content:"";position:absolute;right:-4px;top:50%;margin-top:-6px;width:12px;height:12px;border-radius:50%;background:var(--s4)}
+.inst p{color:var(--soft)}
+.pill{display:inline-flex;align-items:center;justify-content:center;min-height:76px;padding:0 64px;border-radius:99px;font-weight:800;font-size:27px;background:var(--tq);color:var(--bk);box-shadow:0 12px 28px -12px rgba(31,176,204,.8);transition:transform .25s,box-shadow .25s}
+.pill:hover{transform:translateY(-2px);box-shadow:0 18px 32px -12px rgba(31,176,204,.9)}
+.links{display:flex;justify-content:center;gap:8px 24px;flex-wrap:wrap;margin-top:16px}
+.lnk{font-weight:700;font-size:15px;color:var(--soft);text-decoration:underline;text-underline-offset:4px;padding:10px 4px;min-height:44px}
+.msgok{min-height:24px;margin-top:4px;font-weight:700;font-size:15px;color:var(--tq)}
+pre{white-space:pre-wrap;text-align:right;background:var(--s2);border-radius:20px;padding:20px;font:14px/1.7 var(--font);margin:8px auto 0;max-width:640px;color:var(--soft)}
+.note{text-align:center;color:var(--dim);font-size:14px;margin:16px 0 0}
+#shownw{display:none}#shownw.on{display:block}
+
+/* חלון הרחבה */
+.ov{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(5,8,12,.74);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.ov.on{display:flex}
+.pn{position:relative;width:min(1040px,100%);height:min(92vh,712px);display:flex;flex-direction:column;overflow:hidden;background:radial-gradient(ellipse 60% 50% at 85% 0%,rgba(31,176,204,.2),transparent 70%),linear-gradient(170deg,rgba(30,40,54,.92),rgba(14,19,27,.96));color:#fff;border-radius:32px;padding:64px 40px 22px;box-shadow:0 60px 120px -30px rgba(0,0,0,.85)}
+#pbody{flex:1;min-height:0;overflow:auto;overflow-x:hidden}
+.pc{min-height:100%;display:grid;grid-template-columns:1fr 1.05fr;gap:32px;align-items:stretch}
+.ph{display:flex;align-items:center;gap:16px}
+.num{font-family:var(--px);font-size:clamp(64px,8vw,104px);line-height:.9;color:var(--tq);direction:ltr}
+.hd .art{width:130px;height:174px;flex:none;object-fit:contain;mix-blend-mode:normal;-webkit-mask-image:none;mask-image:none;position:static;transform:none}
+.pc>.tx{display:flex;flex-direction:column;justify-content:flex-start;gap:0;height:100%}
+.pc .exs{flex:1;display:flex;flex-direction:column;gap:14px;margin-top:20px}
+.pc .exs h4{margin-bottom:-2px}
+.pc .ex1{flex:1;display:flex;flex-direction:column;justify-content:center;padding:6px 18px}
+.tgw .tag{margin-bottom:12px}.tgw .tag:last-child{margin-bottom:0}.tgw .tag+.tag{margin-top:0}
+.hd{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;margin-bottom:8px}
+.hd h2{margin:0}
+.hd .num{display:block;text-align:right}
+.pc h2{font-size:clamp(32px,3.4vw,44px);margin:8px 0}
+.pc .tag{text-wrap:pretty;color:var(--soft);font-size:18px;font-weight:500;line-height:1.55;margin-bottom:16px}
+.pc .tag+.tag{margin-top:-8px}
+.exs{display:flex;flex-direction:column;gap:8px}
+.exs h4{font-size:14px;color:var(--dim);font-weight:800}
+.ex1{background:rgba(255,255,255,.07);border-radius:18px;padding:8px 16px;font-size:15.5px;line-height:1.4}
+.ex1 small{display:block;color:var(--dim);font-size:13px;font-weight:700}
+.ex1 b{font-weight:800}
+.gx{justify-content:space-evenly!important;background:rgba(7,10,15,.72);border-radius:26px;padding:40px 20px 20px;height:100%;display:flex;flex-direction:column;gap:12px;justify-content:center;position:relative;overflow:hidden}
+.gx>*{position:relative}
+.gx .demo{position:absolute;top:14px;right:20px;font-size:12.5px;font-weight:800;color:var(--dim)}
+.pnav{flex:none;display:flex;align-items:center;justify-content:space-between;margin-top:16px}
+.pnav button{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);color:#fff;border-radius:99px;padding:0 24px;min-height:48px;font-weight:800;font-size:16px;transition:background .2s}
+.pnav button:hover{background:rgba(255,255,255,.14)}
+.pnav .cnt{font-weight:800;color:var(--dim);font-size:15px}
+.xbtn{position:absolute;top:12px;left:12px;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.08);z-index:3;transition:transform .3s,background .2s}
+.xbtn:hover{transform:rotate(90deg);background:rgba(255,255,255,.14)}
+.xbtn:before,.xbtn:after{content:"";position:absolute;top:50%;left:50%;width:18px;height:4px;margin:-2px 0 0 -9px;border-radius:4px;background:#fff;transform:rotate(45deg)}
+.xbtn:after{transform:rotate(-45deg)}
+.tri{width:0;height:0;border-style:solid}
+.tri.l{border-width:6px 10px 6px 0;border-color:transparent var(--tq) transparent transparent}
+.tri.r{border-width:6px 0 6px 10px;border-color:transparent transparent transparent var(--tq)}
+.grab{display:none}
+
+/* אינפוגרפיקות */
+.b{border-radius:18px;padding:10px 14px;font-size:15px;font-weight:600;line-height:1.35}
+.b.me{background:rgba(255,255,255,.1);align-self:flex-start;border-end-start-radius:6px}
+.b.ai{background:rgba(31,176,204,.26);border-end-end-radius:6px}
+.b.t{background:var(--tq);color:var(--bk);font-weight:800}
+.b.g{background:rgba(255,255,255,.08);color:#9AA7B5}
+.cap{font-size:12.5px;font-weight:800;color:var(--dim);display:block;margin-bottom:-40px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sk{display:flex;flex-direction:column;gap:8px;background:rgba(255,255,255,.08);border-radius:18px;padding:14px}
+.sk i{display:block;height:8px;border-radius:8px;background:#4A586C;width:0}
+.mtw{height:12px;border-radius:12px;background:rgba(255,255,255,.1);overflow:hidden}.mtw i{display:block;height:100%;width:0;border-radius:12px;background:var(--tq)}
+.nudge{background:var(--tq);color:var(--bk);border-radius:18px;padding:12px 16px;font-weight:800;font-size:15px;line-height:1.3}
+.adv{display:flex;align-items:center;gap:10px}
+.adv .ic{flex:none;display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:var(--tq);color:var(--bk);font-size:15px;font-weight:800}
+.adv .nm{font-weight:800;font-size:13.5px;min-width:76px}
+.adv .rm{flex:1;background:rgba(255,255,255,.08);border-radius:14px;padding:7px 12px;font-size:13.5px;line-height:1.3}
+.verdict{background:var(--tq);color:var(--bk);border-radius:18px;padding:12px 16px;font-weight:800;font-size:16px;line-height:1.3;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.vm{display:flex;gap:4px;width:74px;flex:none}.vm i{flex:1;height:9px;border-radius:9px;background:rgba(13,17,23,.25)}
+.vm i.f{background:var(--bk);opacity:0}
+.kv{background:rgba(255,255,255,.08);border-radius:18px;padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.kv div{display:flex;justify-content:space-between;gap:10px;font-size:14.5px}
+.kv span{color:var(--soft)}.kv b{font-weight:800}
+.memr{display:flex;align-items:center;gap:12px;font-weight:800;font-size:15px}
+.tsw{width:46px;height:27px;border-radius:99px;background:#4A586C;position:relative;flex:none;transition:background .4s}
+.tsw:after{content:"";position:absolute;top:3.5px;right:3.5px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .45s cubic-bezier(.3,1.5,.5,1),background .4s}
+.tsw.on{background:var(--tq)}.tsw.on:after{transform:translateX(-19px);background:var(--bk)}
+.stp{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.stp div{background:rgba(255,255,255,.08);border-radius:14px;padding:8px 4px;text-align:center;font-size:12.5px;font-weight:800;line-height:1.2;transition:background .4s,color .4s}
+.stp div.on{background:var(--tq);color:var(--bk)}
+.st{background:linear-gradient(#fff,#fff) no-repeat 100% 56%/0% 3px;transition:background-size .5s}
+.st.on{background-size:100% 3px}
+.row2{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700}
+.row2 .b{padding:7px 11px;font-size:13.5px}
+.arrd{width:0;height:0;border-style:solid;border-width:10px 7px 0 7px;border-color:var(--tq) transparent transparent transparent;align-self:center}
+.arrl{flex:none;width:0;height:0;border-style:solid;border-width:6px 10px 6px 0;border-color:transparent var(--tq) transparent transparent}
+.draft{background:rgba(255,255,255,.09);border-radius:20px;padding:14px 16px;transition:transform .8s cubic-bezier(.6,0,.3,1),opacity .6s}
+.draft p{font-size:15.5px;font-weight:700;line-height:1.35;margin:3px 0 12px}
+.btnr{display:flex;gap:8px}
+.btnr span{padding:8px 15px;border-radius:99px;font-weight:800;font-size:13.5px;background:rgba(13,17,23,.7);transition:background .3s,color .3s,transform .3s}
+.gates{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.gate{background:rgba(255,255,255,.08);border-radius:16px;padding:10px 6px;text-align:center;font-size:13.5px;font-weight:800;line-height:1.2;transition:background .4s,color .4s}
+.gate small{display:block;font-size:11.5px;color:var(--soft);font-weight:600;margin-top:2px;transition:color .4s}
+.gate svg{width:26px;height:26px;margin:0 auto 5px;display:block;color:var(--soft);transition:color .4s;overflow:visible}
+.gate svg .sh{transform-box:fill-box;transform-origin:0% 100%}
+.gate.on small{font-size:0}.gate.on small:after{content:"אושר";font-size:12px}
+.gate.on{background:var(--tq);color:var(--bk)}.gate.on small,.gate.on svg{color:var(--bk)}
+.gate.on svg .sh{transform:translateY(-2.5px) rotate(-22deg)}
+.sent{position:absolute!important;inset:0;background:#070a0f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;opacity:0;pointer-events:none;z-index:2}
+.sent .ck{width:84px;height:84px;border-radius:50%;background:var(--tq);display:flex;align-items:center;justify-content:center;box-shadow:0 20px 50px -14px rgba(31,176,204,.9)}
+.sent .ck svg{width:44px;height:44px}
+.sent b{font-size:24px;font-weight:800}
+.sent small{color:var(--soft);font-weight:600;font-size:14px}
+.tap{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:rgba(255,255,255,.5);opacity:0;pointer-events:none;z-index:3}
+
+.pop{opacity:0;transform:translateY(16px) scale(.96)}
+.run .pop{animation:popin .55s cubic-bezier(.2,1.3,.4,1) var(--d,0s) both}
+@keyframes popin{to{opacity:1;transform:none}}
+.run .sk i{animation:gw 1s var(--d,0s) ease-out both}
+@keyframes gw{to{width:var(--w,100%)}}
+.run .mtw i{animation:gw 2.2s var(--d,0s) ease-out both}
+.run .vm i.f{animation:fadein .3s var(--d,0s) both}
+@keyframes fadein{to{opacity:1}}
+.run .tapa{animation:tapx .8s var(--d,0s) ease-out both}
+@keyframes tapx{0%{opacity:.8;transform:scale(.4)}100%{opacity:0;transform:scale(1.6)}}
+.run .flyaway{animation:fly .8s var(--d,0s) cubic-bezier(.6,0,.3,1) both}
+@keyframes fly{to{transform:translateY(-140%) scale(.9);opacity:0}}
+.run .sentin{animation:fadein .5s var(--d,0s) both}
+.run .sentin .ck{animation:popin .6s var(--d,0s) cubic-bezier(.2,1.5,.4,1) both;opacity:0}
+.swap{animation:swp .35s ease both}
+@keyframes swp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+@media(min-width:1500px){
+  .oz{--oh:clamp(300px,calc((50vw - 680px)/.376*1.05),740px);height:var(--oh);left:calc(50vw - 640px - var(--oh)*.376);bottom:-64px}
+  .th{top:-100px}
+}
+/* אינפוגרפיקות: הדגמה גדולה ומאוזנת */
+.gx{justify-content:space-between!important;gap:14px;padding:56px 28px 32px}
+.grp{display:flex;flex-direction:column;gap:10px}
+.grp .cap{margin:0}
+.gx>.sent{margin-top:0}
+.gx .b{font-size:18px;padding:15px 20px;line-height:1.4}
+.gx .cap{font-size:13.5px;margin-bottom:7px}
+.two{display:flex;flex-direction:column;gap:18px}
+.sk{padding:18px;gap:11px}.sk i{height:9px}
+.mtw{height:14px}
+.nudge{font-size:17px;padding:15px 20px}
+.adv{gap:12px}.adv .ic{width:38px;height:38px;font-size:16px}.adv .nm{font-size:15.5px;min-width:118px}.adv .rm{font-size:15px;padding:10px 14px}
+.verdict{font-size:18px;padding:16px 20px}
+.kv{padding:18px 20px;gap:13px}.kv div{font-size:16.5px}
+.memr{font-size:17px;flex-direction:row-reverse;justify-content:space-between}
+.kv div{flex-direction:row-reverse}.kv b{text-align:right;font-size:18px}.kv span{text-align:left;font-size:14.5px}.tsw{width:52px;height:30px}.tsw:after{width:23px;height:23px;top:3.5px;right:3.5px}.tsw.on:after{transform:translateX(-22px)}
+.stp div{font-size:14px;padding:12px 6px}
+.row2{gap:10px}.row2 .b{font-size:15.5px;padding:9px 14px}
+.draft{padding:20px 22px}.draft p{font-size:18.5px;margin:6px 0 16px}.btnr span{font-size:15px;padding:10px 18px}
+.gate{padding:16px 8px;font-size:15px}.gate svg{width:30px;height:30px;overflow:visible}.gate small{font-size:12.5px}
+.sent{position:relative!important;inset:auto!important;background:rgba(31,176,204,.16)!important;border-radius:20px;display:grid!important;grid-template-columns:auto 1fr;column-gap:14px;align-items:center;justify-content:start!important;text-align:start;padding:16px 20px;z-index:auto}
+.sent .ck{grid-row:1/3;width:46px;height:46px;box-shadow:none}.sent .ck svg{width:26px;height:26px}
+.sent b{font-size:19px;align-self:end}.sent small{align-self:start;font-size:14.5px}
+/* גוון עמוק יותר בהדגמות, ועיגולים במקום חצים */
+.gx .b.t,.gx .nudge,.gx .verdict,.gx .gate.on,.gx .stp div.on{background:var(--tqd);color:#fff}
+.gx .gate.on small,.gx .gate.on svg{color:#fff}
+.gx .verdict .cap{color:#BFE3EC!important}
+.gx .vm i.f{background:#fff}.gx .vm i{background:rgba(255,255,255,.2)}
+.gx .adv .ic{background:var(--tqd);color:#fff}
+.gx .mtw i{background:var(--tqd)}
+.gx .tsw.on{background:var(--tqd)}.gx .tsw.on:after{background:#fff}
+.gx .sent .ck{background:var(--tqd)}
+.gx .row2 .b.t{background:var(--tqd);color:#fff}
+.arrd,.arrl{flex:none;width:14px;height:14px;border:0!important;border-radius:50%;background:var(--tqd)}
+.arrd{align-self:center}
+.sep:after{left:-6px;top:50%;margin-top:-7px;width:14px;height:14px;border:0;border-radius:50%;background:var(--tq)}
+.sep:before{display:none}
+.sep:last-of-type:after{background:#fff}
+@media(max-width:1279px){
+  :root{--cw:204px;--ch:328px}
+  .stage{padding:8px 24px 56px;flex-direction:column;align-items:center;min-height:0}
+  .oz{position:relative;left:auto;bottom:auto;height:300px;margin:140px 0 -16px;order:-1}
+}
+@media(max-width:900px){
+  .top{padding-top:32px}
+  .top img{height:40px;margin-bottom:24px}
+  .stage{padding:8px 16px 40px;flex-direction:column;align-items:center}
+  .oz{height:260px;margin:104px 0 -20px}
+  .th{width:230px;margin-left:-115px;font-size:14px;top:-112px;left:50%}
+  .deck{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;max-width:420px;padding:24px 0 0;perspective:none;transform:none}
+  .card{--cw:auto;--ch:auto;--r:0deg;--y:0px;width:auto;height:auto;margin:0;aspect-ratio:3/4;transform:none!important}
+  .card:hover,.card:active,.card:focus-visible{--lift:0px}
+  .card:nth-child(5){grid-column:1/-1;width:calc(50% - 7px);justify-self:center}
+  .cname{bottom:48px;font-size:clamp(16px,4.6vw,20px)}
+  .card .art{top:40px;height:calc(100% - 108px);left:6%;width:88%}
+  .cdesc{font-size:12.5px;bottom:14px;left:8px;right:8px}
+  .cn{font-size:22px}
+  .warm{padding-top:64px}
+  .rw{flex-direction:column;align-items:flex-start;gap:8px}
+  .ov{padding:0;align-items:flex-end}
+  .pn{border-radius:28px 28px 0 0;height:94vh;padding:64px 20px 20px}
+  .grab{display:block;position:absolute;top:10px;left:50%;width:44px;height:5px;margin-left:-22px;border-radius:5px;background:rgba(255,255,255,.22)}
+  .pc{grid-template-columns:1fr;gap:20px}
+  .gx{min-height:0;padding:40px 16px 16px}
+  .xbtn{top:12px;left:12px}
+  .inst{padding-top:56px}
+  .steps{grid-template-columns:1fr;justify-items:center;gap:0}
+  .st1{width:100%}
+  .sep{width:4px;height:44px;margin:0}
+  .sep:after{left:50%;top:auto;bottom:-7px;margin:0 0 0 -7px}
+}
+@media(prefers-reduced-motion:reduce){.oz .imgs,.art .glow{animation:none}.card{animation:none}}
+.gx .pr{display:flex;flex-direction:column;gap:7px;background:rgba(255,255,255,.04);border-radius:20px;padding:12px 16px}
+.gx .pr .cap{margin:0}
+.gx .pr .b{font-size:16.5px;padding:9px 16px}
+.wg{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:1000px;margin:0 auto}
+.wt{background:var(--s2);border-radius:24px;padding:26px 20px;text-align:center;align-items:center;justify-content:center;display:flex;flex-direction:column;gap:8px;transition:transform .3s,background .3s}
+.wt:hover{transform:translateY(-4px);background:var(--s3)}
+.wt strong{font-size:20px;font-weight:800;color:var(--tq);line-height:1.2}
+.wt span{color:var(--soft);font-size:16px;line-height:1.5}
+@media(max-width:900px){.wg{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.wg{grid-template-columns:1fr}}
+/* מובייל: קלפים קודם, עוז אחריהם; התקנה קומפקטית */
+.mbr{display:none}
+@media(max-width:900px){
+  .top{padding-top:20px}
+  .top img{height:34px;margin-bottom:14px}
+  .top h1{font-size:clamp(30px,8.6vw,40px);margin-bottom:10px}
+  .top p{font-size:16px;text-wrap:balance}
+  .pill{white-space:nowrap}
+  .stage{min-height:0;padding:0 16px 32px}
+  .deck{padding-top:16px}
+  .stage{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:stretch;justify-items:stretch;max-width:452px;margin:0 auto;padding:16px 16px 32px}
+  .deck{display:contents}
+  .card:nth-child(1){order:0}
+  .card:nth-child(n+2){order:2}
+  .card:nth-child(5){grid-column:auto;width:auto;justify-self:auto}
+  .oz{order:1;position:relative;height:auto;aspect-ratio:auto;margin:0;min-height:0}
+  .oz .imgs{position:absolute;inset:0;width:100%;height:100%}
+  .oz{margin-right:-34px;z-index:2}
+  .oz img{inset:30px 26px 0 auto;width:86%;height:calc(100% - 30px);object-fit:cover;object-position:50% 0;-webkit-mask-image:linear-gradient(180deg,#000 72%,transparent 100%);mask-image:linear-gradient(180deg,#000 72%,transparent 100%)}
+  .card:nth-child(1){z-index:3}
+  .th{display:none}
+  .warm .sub{font-size:16px;text-wrap:wrap}
+  .mbr{display:inline}
+  .steps{display:flex;flex-direction:column;align-items:stretch;gap:10px;max-width:420px;margin-bottom:28px}
+  .sep{display:none}
+  .st1{display:grid;grid-template-columns:auto 1fr;column-gap:14px;row-gap:0;align-items:center;text-align:right;padding:14px 18px;border-radius:22px;height:auto}
+  .st1 b{grid-row:1/3;margin:0;width:44px;height:44px}
+  .st1 strong{font-size:18px;align-self:end}
+  .st1 span{font-size:14.5px;align-self:start}
+}
+@media(max-width:560px){
+  .wt{padding:16px 12px;gap:4px;border-radius:20px}
+  .wt strong{font-size:18px}
+  .wt span{font-size:clamp(13.5px,3.9vw,15.5px);white-space:nowrap}
+}
+/* אייפד: קלפים קטנים יותר ועוז לצד */
+@media(min-width:901px) and (max-width:1279px){
+  :root{--cw:clamp(128px,14.2vw,190px);--ch:calc(var(--cw)*1.608)}
+  .stage{flex-direction:row;align-items:center;min-height:0;padding:20px 24px 24px calc(var(--ch)*.75 + 8px)}
+  .oz{position:absolute;order:0;left:calc(var(--ch)*.36);bottom:-56px;margin:0;height:calc(var(--ch)*1.42)}
+  .card{margin:0 -12px}
+  .cname{font-size:15.5px;bottom:56px}
+  .cdesc{font-size:11.5px;bottom:12px}
+  .cn{font-size:18px}
+  .card .art{top:28px;height:calc(100% - 118px)}
+}
+@media(min-width:901px) and (max-width:1050px){
+  .card{margin:0 -4px}
+  .cname{font-size:14.5px;bottom:50px}
+  .cdesc{font-size:10.5px;left:4px;right:4px}
+}
+/* לפטופ 13 אינץ: קלפים ועוז מוקטנים, עוז צמוד לחפיסה */
+@media(min-width:1280px) and (max-width:1499px){
+  :root{--cw:clamp(190px,15.4vw,230px);--ch:calc(var(--cw)*1.631);--oh:calc(var(--ch)*1.18)}
+  .stage{min-height:0;padding:20px 24px 24px}
+  .oz{height:var(--oh);left:calc(50vw - (5*var(--cw) - 176px)/2 - var(--oh)*.376 - 38px);bottom:-20px}
+  .cname{font-size:21px;bottom:54px}
+  .cdesc{font-size:13.5px}
+  .card .art{top:38px;height:calc(100% - 130px)}
+}
+/* אייפד (מסך מגע): בלי עוז, קלפים במרכז ובגדול */
+@media(min-width:601px) and (max-width:1500px){
+  .oz{display:none!important}
+  .stage{display:flex;flex-direction:row;justify-content:center;align-items:center;min-height:0;max-width:none;margin:0;padding:24px 24px 40px}
+}
+@media(min-width:901px) and (max-width:1500px){
+  :root{--cw:clamp(200px,19vw,260px);--ch:calc(var(--cw)*1.631)}
+  .deck{display:flex;padding:30px 0 0}
+  .card{margin:0 -22px}
+  .cname{font-size:23px;bottom:62px}
+  .cdesc{font-size:14px;bottom:38px;left:14px;right:14px}
+  .cn{font-size:26px}
+  .card .art{top:48px;height:calc(100% - 160px);left:8%;width:84%}
+}
+@media(min-width:601px) and (max-width:900px){
+  .deck{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;width:100%;max-width:680px;padding:8px 0 0}
+  .card,.card:nth-child(5){width:calc(33.333% - 11px);grid-column:auto;justify-self:auto}
+  .card:nth-child(n){order:0}
+  .cname{font-size:clamp(18px,2.6vw,22px)}
+  .cdesc{font-size:13px}
+}
+</style>
+</head>
+<body>
+<main id="main">
+<header class="top">
+  <img src="img/uos-logo-white.svg" alt="UOS" width="132" height="44">
+  <h1>קלוד שעובד בשבילכם,<br><em>לא רק עונה לכם</em></h1>
+  <p>חמישה כללי עבודה שמשנים איך קלוד מתנהג איתכם, בכל שיחה</p>
+</header>
+
+<section class="stage" id="stage">
+  <div class="deck" id="deck" role="list">
+    <button class="card" type="button" role="listitem" data-i="0" style="--k:2;--n:0" aria-label="כלל 1: קצר ולעניין">
+      <img class="art" src="img/v12/c1.webp" alt="מספריים חמודים גוזרים מגילה ארוכה ומבולגנת לפתק קטן" width="720" height="960" loading="eager">
+      <span class="cn ct">1</span><span class="cname">קצר ולעניין</span><span class="cdesc">תשובה קצרה, בלי חפירות</span>
+    </button>
+    <button class="card" type="button" role="listitem" data-i="1" style="--k:1;--n:1" aria-label="כלל 2: יועץ ישר">
+      <img class="art" src="img/v12/c2.webp" alt="ינשוף חשדן דוחף הצידה בובת ראש מהנהנת" width="720" height="960" loading="eager">
+      <span class="cn ct">2</span><span class="cname">יועץ ישר</span><span class="cdesc">אומר גם את מה שלא נעים</span>
+    </button>
+    <button class="card" type="button" role="listitem" data-i="2" style="--k:0;--n:2" aria-label="כלל 3: מכיר את העסק">
+      <img class="art" src="img/v12/c3.webp" alt="פיל קטן בסינר עם שלט חנות ומתג דלוק" width="720" height="960" loading="eager">
+      <span class="cn ct">3</span><span class="cname">מכיר את העסק</span><span class="cdesc">זוכר מי אתם ומה העסק שלכם</span>
+    </button>
+    <button class="card" type="button" role="listitem" data-i="3" style="--k:-1;--n:3" aria-label="כלל 4: עברית נקייה">
+      <img class="art" src="img/v12/c4.webp" alt="רובוט מטאטא סימני קריאה לאיתור" width="720" height="960" loading="eager">
+      <span class="cn ct">4</span><span class="cname">עברית נקייה</span><span class="cdesc">בלי תרגום ובלי סימני קריאה</span>
+    </button>
+    <button class="card" type="button" role="listitem" data-i="4" style="--k:-2;--n:4" aria-label="כלל 5: אור ירוק">
+      <img class="art" src="img/v12/c5.webp" alt="רמזור קורץ עם אגודל למעלה וחותמת" width="720" height="960" loading="eager">
+      <span class="cn ct">5</span><span class="cname">אור ירוק</span><span class="cdesc">שום דבר לא יוצא בלי אישור</span>
+    </button>
+  </div>
+
+  <aside class="oz" id="oz" data-pose="stand" aria-label="עוז, העוזר">
+    <div class="th" id="th" role="status" aria-live="polite"><b>עוז</b><span id="tht"></span></div>
+    <div class="imgs"><img class="p-stand" src="img/v12/oz_x.webp" alt="עוז" width="327" height="870"><img class="p-think" src="img/v12/oz_t.webp" alt="" width="327" height="870"><img class="p-up" src="img/v12/oz_u.webp" alt="" width="327" height="870"></div>
+  </aside>
+</section>
+
+<div class="wrap">
+  <section class="warm" id="warm">
+    <h2>וזו רק <em>ההתחלה</em></h2>
+    <p class="sub">חמשת הכללים משפרים את השיחה עם קלוד.<br class="mbr"> עוזר שנבנה במיוחד לעסק שלכם עושה הרבה יותר: הוא עובד בתוך הכלים שלכם ולוקח על עצמו משימות שלמות</p>
+    <div class="wg">
+      <div class="wt"><strong>עונה ללקוחות</strong><span>שאלות שחוזרות מקבלות תשובה מיד</span></div>
+      <div class="wt"><strong>מזכיר על תשלומים</strong><span>פנייה נעימה למי ששכח, ועדכון כשמשהו שולם</span></div>
+      <div class="wt"><strong>מסדר יומן ומייל</strong><span>פגישות, תזכורות והודעות מסודרות במקום אחד</span></div>
+      <div class="wt"><strong>מעלה פוסטים</strong><span>מכין ומעלה, ואתם מאשרים לפני כל פרסום</span></div>
+    </div>
+    <p class="end">המשימות החוזרות עוברות אליו, ואתם קובעים מה מותר לו לעשות <em>בשיחה שלנו נראה איך זה נראה בעסק שלכם</em></p>
+  </section>
+
+  <section class="inst" id="install">
+    <h2>מתקינים <em>בשלושה</em> צעדים</h2>
+    <div class="steps">
+      <div class="st1"><b>1</b><strong>לוחצים</strong><span>קלוד נפתח עם הודעה מוכנה</span></div>
+      <i class="sep" aria-hidden="true"></i>
+      <div class="st1"><b>2</b><strong>שולחים</strong><span>שולחים אותה כמו כל הודעה</span></div>
+      <i class="sep" aria-hidden="true"></i>
+      <div class="st1 last"><b>3</b><strong>מקבלים הכל</strong><span>חמשת הכללים פעילים בכל שיחה</span></div>
+    </div>
+    <button class="pill" id="go" type="button">התקינו בקלוד</button>
+    <div class="links">
+      <button class="lnk" id="copy" type="button">או העתיקו את ההודעה</button>
+      <button class="lnk" id="showb" type="button" aria-expanded="false" aria-controls="shownw">מה בדיוק נשלח לקלוד?</button>
+    </div>
+    <div class="msgok" id="msg" role="status"></div>
+    <div id="shownw"><pre id="shown"></pre></div>
+    <p class="note">דורש חשבון קלוד עם זיכרון פעיל</p>
+  </section>
+</div>
+</main>
+
+<!-- חלון הרחבה -->
+<div class="ov" id="ov" role="dialog" aria-modal="true" aria-label="פרטי הכלל">
+  <div class="pn" id="pn">
+    <span class="grab"></span>
+    <button class="xbtn" id="xb" type="button" aria-label="סגירה"></button>
+    <div id="pbody"></div>
+    <div class="pnav"><button id="pv" type="button"><i class="tri r"></i>הקודם</button><span class="cnt" id="cnt"></span><button id="nx" type="button">הבא<i class="tri l"></i></button></div>
+  </div>
+</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i7" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></symbol></svg>
+
+<!-- תבניות -->
+<template id="t0"><div class="pc">
+  <div class="tx"><div class="ph"><div class="num">01</div><span class="aslot"></span></div><h2>קצר ולעניין</h2>
+    <p class="tag">קלוד עונה קצר וישר לעניין, וקורא רק את מה שצריך כדי לענות. בלי&nbsp;הקדמות ובלי סיכומים מיותרים.</p>
+    <p class="tag">כשהשיחה מתארכת מאוד הוא מציע לפתוח שיחה חדשה עם סיכום, כדי שהעבודה תישאר מהירה ומסודרת והעיקר לא יאבד.</p>
+    <div class="exs"><h4>איפה זה עוזר</h4>
+      <div class="ex1"><small>שאלה מהירה באמצע יום עמוס</small><b>תשובה בשורה או שתיים, לא מאמר</b></div>
+      <div class="ex1"><small>שיחה ארוכה שנהייתה מבולגנת</small><b>הצעה לסיכום ולשיחה חדשה, והעיקר נשמר</b></div>
+      <div class="ex1"><small>צריך טקסט להעתיק ולשלוח</small><b>בלי הקדמות ובלי "בהחלט, אשמח לעזור"</b></div></div></div>
+  <div class="gx"><span class="demo">דוגמה להמחשה בלבד</span>
+    <div class="b me pop" style="--d:.2s">איך מכינים הצעת מחיר?</div>
+    <div class="two">
+      <div><span class="cap">בלי הכלל</span><div class="sk"><i style="--w:100%;--d:.6s"></i><i style="--w:92%;--d:.9s"></i><i style="--w:98%;--d:1.2s"></i><i style="--w:86%;--d:1.5s"></i><i style="--w:60%;--d:1.8s"></i></div></div>
+      <div><span class="cap">עם הכלל</span><div class="b ai pop" style="--d:1.6s">שלושה דברים: מה מציעים, כמה זה עולה, עד מתי</div></div>
+    </div>
+    <div><span class="cap pop" style="--d:2.4s">אורך השיחה</span><div class="mtw pop" style="--d:2.4s"><i style="--w:92%;--d:2.5s"></i></div></div>
+    <div class="nudge pop" style="--d:4.6s">השיחה התארכה. לפתוח שיחה חדשה עם סיכום?</div>
+  </div></div></template>
+
+<template id="t1"><div class="pc">
+  <div class="tx"><div class="ph"><div class="num">02</div><span class="aslot"></span></div><h2>יועץ ישר</h2>
+    <p class="tag">קלוד לא מחזק דעה בלי סיבה. אם אתם טועים, הוא אומר את זה בנימוק ומציע חלופה.</p>
+    <p class="tag">בהחלטה גדולה הוא מפעיל ועדה של חמישה יועצים, ומקבלים המלצה&nbsp;אחת עם רמת ביטחון.</p>
+    <div class="exs"><h4>איפה זה עוזר</h4>
+      <div class="ex1"><small>חושבים להעלות מחירים</small><b>הוועדה בודקת מכמה זוויות ומחזירה המלצה אחת</b></div>
+      <div class="ex1"><small>רעיון שנשמע מצוין רק לכם</small><b>הוא אומר מה חלש בו, בנימוק, ומציע חלופה</b></div>
+      <div class="ex1"><small>גיוס, השקעה, שינוי בשירות</small><b>המלצה עם רמת ביטחון, כדי לדעת כמה לסמוך</b></div></div></div>
+  <div class="gx"><span class="demo">דוגמה להמחשה בלבד</span>
+    <div class="b me pop" style="--d:.2s">להעלות מחירים ב-30 אחוז?</div>
+    <div class="adv pop" style="--d:.7s"><span class="ic">מ</span><span class="nm">מתנגד</span><span class="rm">הלקוחות הקבועים ירגישו את זה</span></div>
+    <div class="adv pop" style="--d:1.2s"><span class="ic">ח</span><span class="nm">חושב מעקרונות</span><span class="rm">מה הערך שאתם נותנים בפועל?</span></div>
+    <div class="adv pop" style="--d:1.7s"><span class="ic">ר</span><span class="nm">מרחיב אפשרויות</span><span class="rm">אולי העלאה הדרגתית</span></div>
+    <div class="adv pop" style="--d:2.2s"><span class="ic">ז</span><span class="nm">זר שלא מכיר</span><span class="rm">למה זה לא ברור מאליו?</span></div>
+    <div class="adv pop" style="--d:2.7s"><span class="ic">ב</span><span class="nm">מבצע</span><span class="rm">צריך לעדכן מחירון ותפריט</span></div>
+    <div class="verdict pop" style="--d:3.5s"><span>המלצה: לא לכולם. קודם ניסוי של שבועיים</span><span><span class="cap" style="color:#0B3C44;margin:0 0 3px">ביטחון: בינוני</span><span class="vm"><i class="f" style="--d:3.7s"></i><i class="f" style="--d:4s"></i><i></i></span></span></div>
+  </div></div></template>
+
+<template id="t2"><div class="pc">
+  <div class="tx"><div class="ph"><div class="num">03</div><span class="aslot"></span></div><h2>מכיר את העסק</h2>
+    <p class="tag">קלוד שואל פעם אחת מה התפקיד שלכם ומה העסק, וזוכר. בכל משימה הוא עובד לפי מטרה.</p>
+    <p class="tag">הוא בודק מה כבר ידוע, מה חסר ומה הצעד הבא, ורק אז מתחיל. הכלל נשען על זיכרון פעיל בחשבון הקלוד שלכם.</p>
+    <div class="exs"><h4>איפה זה עוזר</h4>
+      <div class="ex1"><small>כל שיחה חדשה מתחילה בהסבר על העסק</small><b>מספרים פעם אחת, ואחר כך הוא כבר מכיר</b></div>
+      <div class="ex1"><small>מבקשים הצעה ללקוח</small><b>היא מותאמת לסוג העסק ולגודל שלו</b></div>
+      <div class="ex1"><small>משימה מסובכת</small><b>הוא קודם בודק מה המטרה, מה ידוע ומה חסר</b></div></div></div>
+  <div class="gx"><span class="demo">דוגמה להמחשה בלבד</span>
+    <div class="kv pop" style="--d:.2s"><div><span>תפקיד</span><b>בעלת מסעדה</b></div><div><span>עסק</span><b>מסעדה בחיפה</b></div><div><span>צוות</span><b>שלושה עובדים, משלוחים</b></div></div>
+    <div class="memr pop" style="--d:1s"><span class="tsw" data-on="1.8"></span>נשמר בזיכרון</div>
+    <span class="cap pop" style="--d:2.4s;margin-top:4px">אחרי שבוע, בשיחה חדשה</span>
+    <div class="b me pop" style="--d:2.6s">תכתבי הצעה לארוחות עסקיות</div>
+    <div class="b ai pop" style="--d:3.2s">הצעה מותאמת למשלוחים ולצוות של שלושה</div>
+    <div class="stp pop" style="--d:3.8s"><div data-on="4.1">מה המטרה</div><div data-on="4.5">מה ידוע</div><div data-on="4.9">מה חסר</div><div data-on="5.3">הצעד הבא</div></div>
+  </div></div></template>
+
+<template id="t3"><div class="pc">
+  <div class="tx"><div class="ph"><div class="num">04</div><span class="aslot"></span></div><h2>עברית נקייה</h2>
+    <p class="tag">קלוד כותב עברית טבעית ופשוטה, כמו שמדברים. בלי ניסוחים רובוטיים ובלי סימני קריאה מיותרים.</p>
+    <p class="tag">הודעה ללקוח, פוסט או מייל נשמעים כמו אדם ולא כמו תרגום, ואפשר להעתיק אותם ולשלוח.</p>
+    <div class="exs"><h4>איפה זה עוזר</h4>
+      <div class="ex1"><small>הודעה ללקוח</small><b>נשמעת כמו אדם, לא כמו טופס</b></div>
+      <div class="ex1"><small>פוסט לרשתות</small><b>בלי סימני קריאה בכל משפט</b></div>
+      <div class="ex1"><small>הצעת מחיר</small><b>עברית פשוטה וברורה</b></div></div></div>
+  <div class="gx"><span class="demo">דוגמה להמחשה בלבד</span>
+    <div class="pr pop" style="--d:0.2s"><span class="cap">הודעה ללקוח</span><div class="b g"><span class="st" data-on="0.9">אנו שמחים להודיעך בזאת כי הזמנתך התקבלה בהצלחה</span></div><div class="b t pop" style="--d:1.2s">קיבלנו את ההזמנה, היא תגיע ביום שלישי</div></div>
+    <div class="pr pop" style="--d:1.3s"><span class="cap">בקשה</span><div class="b g"><span class="st" data-on="2.0">הנך מתבקש לאשר את קבלת ההצעה</span></div><div class="b t pop" style="--d:2.3s">אפשר לאשר את ההצעה?</div></div>
+    <div class="pr pop" style="--d:2.4s"><span class="cap">עדכון</span><div class="b g"><span class="st" data-on="3.1">ברצוננו לעדכן אותך כי המשלוח התעכב</span></div><div class="b t pop" style="--d:3.4s">המשלוח התעכב. מגיע מחר</div></div>
+  </div></div></template>
+
+<template id="t4"><div class="pc">
+  <div class="tx"><div class="ph"><div class="num">05</div><span class="aslot"></span></div><h2>אור ירוק</h2>
+    <p class="tag">קלוד לא שולח, לא מוחק ולא משלם בלי אישור מפורש. הוא מכין טיוטה ושואל, ואתם מחליטים.</p>
+    <p class="tag">אתם יכולים לאשר, לערוך או לעצור. כך שום דבר לא יוצא בשם העסק לפני שראיתם אותו, וגם לא נמחק או משולם.</p>
+    <div class="exs"><h4>איפה זה עוזר</h4>
+      <div class="ex1"><small>מייל ללקוח</small><b>מקבלים טיוטה לעריכה, ושולחים רק אחרי אישור</b></div>
+      <div class="ex1"><small>מחיקת קבצים או נתונים</small><b>הוא שואל לפני, ולא מוחק לבד</b></div>
+      <div class="ex1"><small>תשלום</small><b>אף פעם לא משלם בלי אישור מפורש</b></div></div></div>
+  <div class="gx" id="g5"><span class="demo">דוגמה להמחשה בלבד</span>
+    <div class="draft pop" id="dr" style="--d:.2s"><span class="cap">טיוטה: מייל ללקוחה</span><p>שלום דנה, תודה על הסבלנות. ההזמנה יוצאת מחר בבוקר.</p><div class="btnr"><span id="okb" data-on="2.4">אשרו ושלחו</span><span>ערכו</span><span>לא עכשיו</span></div></div>
+    <span class="cap pop" style="--d:.7s;margin-top:4px">פעולות שמחכות לאישור שלכם</span>
+    <div class="gates pop" style="--d:.8s">
+      <div class="gate" data-on="2.9"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="12" rx="3" fill="currentColor"/><path class="sh" d="M8 10V7.5a4 4 0 0 1 8 0V10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>שליחה<small>מחכה לאישור</small></div>
+      <div class="gate"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="12" rx="3" fill="currentColor"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>מחיקה<small>מחכה לאישור</small></div>
+      <div class="gate"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="12" rx="3" fill="currentColor"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>תשלום<small>מחכה לאישור</small></div>
+    </div>
+    <div class="sent sentin" style="--d:3.9s"><div class="ck"><svg><use href="#i7"/></svg></div><b>נשלח</b><small>מחיקה ותשלום מחכות לאישור נפרד</small></div>
+  </div></div></template>
+
+<script>
+var PROMPT = [
+'התקן אצלי עכשיו חבילת עבודה של 5 כללים, ושמור אותם בזיכרון שלך לצמיתות. מעכשיו תפעל לפיהם בכל שיחה, גם בלי שאבקש, ואל תשאל אותי כל פעם.',
+'',
+'1. חיסכון: ענה קצר וישר לעניין, קרא רק מה שצריך, והצע לפתוח שיחה חדשה כשהשיחה מתארכת מאוד.',
+'2. יועץ ישר: אל תחזק את דעתי בלי סיבה. אם אני טועה, אמור זאת בנימוק והצע חלופה. בהחלטה גדולה הפעל ועדה של חמישה יועצים (מתנגד, חושב מעקרונות, מרחיב אפשרויות, זר שלא מכיר את התחום, מבצע) וסיים בהמלצה אחת עם רמת ביטחון.',
+'3. עוזר אישי: שאל אותי פעם אחת מה תפקידי ומה העסק שלי, זכור, ועבוד כמי שמכיר אותי: מטרה, מה כבר ידוע, מה חסר, הצעד הבא.',
+'4. עברית נקייה: כתוב עברית טבעית ופשוטה, בלי ניסוחים רובוטיים ובלי סימני קריאה מיותרים.',
+'5. אישור לפני פעולה: אל תשלח, תמחק או תשלם בלי אישור מפורש שלי. הצג טיוטה ושאל.',
+'',
+'בסיום אשר לי בשורה אחת מה שמרת.'
+].join('\n');
+document.getElementById('shown').textContent=PROMPT;
+var msg=document.getElementById('msg'),go=document.getElementById('go');
+var installed=false;
+function copy(){
+  if(navigator.clipboard&&navigator.clipboard.writeText){return navigator.clipboard.writeText(PROMPT).then(function(){return true},function(){return false})}
+  return Promise.resolve(false);
+}
+go.addEventListener('click',function(){
+  installed=true;copy();window.open('https://claude.ai/new?q='+encodeURIComponent(PROMPT),'_blank','noopener');
+  go.textContent='קלוד נפתח, רק לשלוח';
+  msg.textContent='אם ההודעה לא הופיעה בקלוד, הדביקו אותה. היא כבר הועתקה';
+});
+document.getElementById('copy').addEventListener('click',function(){
+  copy().then(function(ok){msg.textContent=ok?'ההודעה הועתקה. הדביקו בשיחה חדשה בקלוד ולחצו שליחה':'ההעתקה לא עבדה. פתחו את "מה בדיוק נשלח" והעתיקו ידנית'});
+});
+document.getElementById('showb').addEventListener('click',function(){
+  var w=document.getElementById('shownw'),on=w.classList.toggle('on');this.setAttribute('aria-expanded',on);
+});
+
+/* חימום: חוצים את השורות כשהן נכנסות למסך */
+(function(){
+  var rows=[].slice.call(document.querySelectorAll('.rw'));if(!rows.length)return;
+  if(!('IntersectionObserver' in window)){rows.forEach(function(r){r.classList.add('in')});return}
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){rows.forEach(function(r){r.classList.add('in')});io.disconnect()}})},{threshold:.5});
+  if(rows[0])io.observe(rows[0]);
+})();
+
+/* קלפים, חלון הרחבה ועוז */
+(function(){
+  var cards=[].slice.call(document.querySelectorAll('.card')),ov=document.getElementById('ov'),pn=document.getElementById('pn'),pb=document.getElementById('pbody'),cnt=document.getElementById('cnt'),mainEl=document.getElementById('main');
+  var oz=document.getElementById('oz'),th=document.getElementById('th'),tht=document.getElementById('tht');
+  var cur=-1,openedEver=false,lastAct=Date.now(),lastSay=0,hideT,timers=[];
+  var RM=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var MOB=function(){return window.innerWidth<=900};
+  var TS=parseFloat((location.search.match(/tipscale=([\d.]+)/)||[0,1])[1])||1;
+  function act(){lastAct=Date.now()}
+  ['pointerdown','keydown','scroll','touchstart'].forEach(function(e){addEventListener(e,act,{passive:true})});
+  cards.forEach(function(c){c.addEventListener('click',function(){openCard(+c.getAttribute('data-i'),c)})});
+
+  function clearTimers(){timers.forEach(clearTimeout);timers=[]}
+  function runSeq(root){
+    clearTimers();
+    root.querySelectorAll('[data-on]').forEach(function(n){
+      var d=parseFloat(n.getAttribute('data-on'))*1000;
+      timers.push(setTimeout(function(){n.classList.add('on')},d));
+    });
+    var ok=root.querySelector('#okb');
+    if(ok){timers.push(setTimeout(function(){ok.style.background='var(--tqd)';ok.style.color='#fff';ok.style.transform='scale(.94)'},2400));
+      var dr=root.querySelector('#dr'),tp=root.querySelector('#tp');
+      if(tp){var g=root.querySelector('#g5').getBoundingClientRect(),r=ok.getBoundingClientRect();tp.style.left=(r.left-g.left+r.width/2)+'px';tp.style.top=(r.top-g.top+r.height/2)+'px'}
+      
+    }
+  }
+  function fill(i,anim){
+    var t=document.getElementById('t'+i);
+    pb.innerHTML='';pb.appendChild(t.content.cloneNode(true));
+    var sv=cards[i].querySelector('.art').cloneNode(true);sv.removeAttribute('style');sv.src=sv.getAttribute('src').replace(/\/c(\d)\.webp/,'/m$1.webp');
+    pb.querySelector('.aslot').replaceWith(sv);
+    var ph=pb.querySelector('.ph'),h2=pb.querySelector('.tx h2'),hd=document.createElement('div');hd.className='hd';var ttl=document.createElement('div');ttl.appendChild(ph.querySelector('.num'));ttl.appendChild(h2);hd.appendChild(ttl);hd.appendChild(sv);ph.replaceWith(hd);
+    (function(){var gx=pb.querySelector('.gx');if(!gx)return;var ks=[].slice.call(gx.children),g=null;ks.forEach(function(k){var sp=k.classList.contains('demo')||k.classList.contains('tap')||k.classList.contains('sent');if(sp){g=null;return}if(k.classList.contains('cap')){g=document.createElement('div');g.className='grp';gx.insertBefore(g,k);g.appendChild(k)}else if(g){g.appendChild(k)}})})();var tx=pb.querySelector('.tx'),tw=document.createElement('div');tw.className='tgw';[].slice.call(tx.querySelectorAll(':scope>.tag')).forEach(function(t){tw.appendChild(t)});tx.insertBefore(tw,tx.querySelector('.exs'));
+    if(anim)pb.firstElementChild.classList.add('swap');
+    cnt.textContent=(i+1)+' מתוך 5';
+    pn.classList.remove('run');void pn.offsetWidth;pn.classList.add('run');
+    pn.scrollTop=0;pb.scrollTop=0;
+    runSeq(pb);
+    cur=i;
+  }
+  function geom(card){
+    var a=card.getBoundingClientRect(),b=pn.getBoundingClientRect();
+    return {dx:a.left+a.width/2-(b.left+b.width/2),dy:a.top+a.height/2-(b.top+b.height/2),sx:a.width/b.width,sy:a.height/b.height};
+  }
+  function openCard(i,card){
+    act();openedEver=true;th.classList.remove('on');oz.setAttribute('data-pose','stand');
+    document.body.classList.add('lock');mainEl.inert=true;
+    ov.classList.add('on');
+    fill(i,false);
+    document.getElementById('xb').focus();
+    if(!RM&&pn.animate){
+      if(MOB()){
+        pn.animate([{transform:'translateY(100%)'},{transform:'none'}],{duration:480,easing:'cubic-bezier(.2,.9,.25,1)'});
+      }else if(card){
+        var g=geom(card);card.classList.add('hide');
+        pn.animate([{transform:'translate('+g.dx+'px,'+g.dy+'px) scale('+g.sx+','+g.sy+') rotateY(80deg) rotate(-6deg)',opacity:.3,borderRadius:'22px'},{transform:'none',opacity:1,borderRadius:'32px'}],{duration:650,easing:'cubic-bezier(.2,.9,.25,1)'});
+      }
+      ov.animate([{opacity:0},{opacity:1}],{duration:350});
+    }else if(card&&!MOB())card.classList.add('hide');
+  }
+  function closeCard(){
+    if(!ov.classList.contains('on'))return;
+    clearTimers();
+    var card=cards[cur];
+    var done=function(){ov.classList.remove('on');document.body.classList.remove('lock');mainEl.inert=false;cards.forEach(function(c){c.classList.remove('hide')});if(card)card.focus({preventScroll:true});lastAct=Date.now();afterClose()};
+    if(!RM&&pn.animate){
+      var an;
+      if(MOB()){an=pn.animate([{transform:'none'},{transform:'translateY(100%)'}],{duration:340,easing:'cubic-bezier(.5,0,.8,.3)'})}
+      else{
+        card.classList.add('hide');var g=geom(card);
+        an=pn.animate([{transform:'none',opacity:1},{transform:'translate('+g.dx+'px,'+g.dy+'px) scale('+g.sx+','+g.sy+') rotateY(80deg) rotate(-6deg)',opacity:0}],{duration:420,easing:'cubic-bezier(.5,0,.8,.3)'});
+      }
+      ov.animate([{opacity:1},{opacity:0}],{duration:360});
+      an.onfinish=done;
+    }else done();
+  }
+  function go2(n){fill(n,true);cards.forEach(function(c){c.classList.remove('hide')});if(!MOB())cards[cur].classList.add('hide')}
+  document.getElementById('xb').addEventListener('click',closeCard);
+  ov.addEventListener('click',function(e){if(e.target===ov)closeCard()});
+  document.getElementById('nx').addEventListener('click',function(){if(cur>=4)closeCard();else go2(cur+1)});
+  document.getElementById('pv').addEventListener('click',function(){if(cur<=0)closeCard();else go2(cur-1)});
+  addEventListener('keydown',function(e){
+    if(!ov.classList.contains('on'))return;
+    if(e.key==='Escape')closeCard();
+    if(e.key==='ArrowLeft')document.getElementById('nx').click();
+    if(e.key==='ArrowRight')document.getElementById('pv').click();
+  });
+
+  /* עוז: טיפים רק כשנשארים הרבה זמן בלי לעשות כלום */
+  function say(txt,pose){
+    tht.textContent=txt;th.classList.add('on');lastSay=Date.now();
+    oz.setAttribute('data-pose',pose||'stand');
+    clearTimeout(hideT);hideT=setTimeout(function(){th.classList.remove('on');oz.setAttribute('data-pose','stand')},6500);
+  }
+  var vis=true,t0=Date.now(),didA=0,didB=false,didC=0,dTips=0;
+  var DT=['אפשר לבנות לכם עוזר שעונה ללקוחות גם כשאתם ישנים','אפשר לבנות עוזר שמזכיר ללקוחות לשלם, בנימוס','אפשר לבנות עוזר שמסדר לכם את היומן ואת המייל'];
+  if('IntersectionObserver' in window){new IntersectionObserver(function(es){vis=es[0].isIntersecting},{threshold:.3}).observe(document.getElementById('deck'))}
+  function afterClose(){
+    if(!didB){didB=true;setTimeout(function(){if(!ov.classList.contains('on')&&vis)say('אחלה. יש עוד ארבעה קלפים, בכל אחד דוגמאות אחרות','up')},900)}
+  }
+  setInterval(function(){
+    if(document.hidden||ov.classList.contains('on')||th.classList.contains('on')||!vis)return;
+    var now=Date.now(),idle=(now-lastAct)/TS,since=(now-lastSay)/TS,el=(now-t0)/TS;
+    if(!openedEver&&!installed){
+      if(didA===0&&el>11000&&idle>9000){didA=1;say('אפשר ללחוץ על קלף ולקרוא עוד על הכלל','up');return}
+      if(didA===1&&since>45000&&idle>20000){didA=2;say('כל קלף נפתח לדוגמאות ולהסבר מלא. נסו אחד','think');return}
+    }
+    if(!installed&&didC<2&&idle>28000&&since>22000&&(openedEver||didA>0)){didC++;say(didC===1?'כפתור ההתקנה נמצא למטה':'ההתקנה למטה לוקחת רגע, והכללים כבר איתכם','stand');return}
+    if(!installed&&dTips<DT.length&&idle>35000&&since>40000){say(DT[dTips],'think');dTips++}
+  },1000);
+})();
+</script>
+</body>
+</html>
