@@ -464,6 +464,8 @@ dialog::backdrop{background:rgba(0,0,0,.78);backdrop-filter:blur(8px)}
 .fine{margin-top:14px;font-size:16px;color:var(--dim)}
 .okm{display:none;margin-top:18px;padding:18px 20px;border-radius:20px;background:var(--s3);color:var(--y);font-weight:700}
 .okm.on{display:block}
+.okm .bkt{margin:14px 0 0;color:var(--ink);font-weight:400}
+.okm .pill.bk{display:flex;width:100%;margin-top:14px;white-space:normal;text-align:center}
 .foot{margin-top:clamp(50px,6vw,90px);padding:28px 0 36px;display:flex;justify-content:space-between;align-items:center;font-size:16px;color:var(--dim)}
 .foot img{height:40px;width:auto;opacity:.8}
 
@@ -1853,7 +1855,8 @@ html.dlg-open,html.dlg-open body{overflow:hidden!important;overscroll-behavior:n
 <script>
 /* ===== הגדרות. יעד השליחה ומזהי המעקב: להשלים לפני פרסום, לא להמציא ===== */
 var CONFIG = {
-    LEAD_ENDPOINT: (/^(localhost|127[.]0[.]0[.]1)$/.test(location.hostname) ? 'http://localhost:8792/lead' : ''),   // בבדיקה מקומית: שרת המייל המקומי. בפרסום: כתובת ה-webhook של דני. ריק = תצוגה מקדימה, שום דבר לא נשלח
+    LEAD_ENDPOINT: (/^(localhost|127[.]0[.]0[.]1)$/.test(location.hostname) ? 'http://localhost:8792/lead' : 'https://hook.eu1.make.com/ufdvbnumvpazauno0pwv3vb82kct4fuf'),   // בבדיקה מקומית: שרת המייל המקומי. באתר: וובהוק Make 4080481, תרחיש 8499669, שפותח ליד ב-CRM ושולח את מייל המתנה
+  BOOK_URL: 'https://book.ubiz.co.il/danny/uos',   // שיחת הדגמה של חצי שעה ב-UBIZ Meet
   PROJECT_ID: '', PAGE_ID: '',
   PIXEL_ID: '', CLARITY_ID: ''
 };
@@ -2016,13 +2019,21 @@ $('#leadForm').addEventListener('submit',function(ev){
   var btn=$('#send');btn.disabled=true;
   var ok=$('#ok');
   function done(m){ok.textContent=m;ok.classList.add('on')}
+  /* אחרי שליחה: קביעת שיחת הדגמה של חצי שעה ב-UBIZ Meet, עם השם, המייל והטלפון ממולאים מראש */
+  function bookOffer(n,e,p){
+    var u=CONFIG.BOOK_URL+'?name='+encodeURIComponent(n)+'&email='+encodeURIComponent(e)+(p?'&phone='+encodeURIComponent(p):'')+'&src=uos-site';
+    var t=document.createElement('p');t.className='bkt';t.textContent='רוצים לראות איך UOS תעבוד אצלכם? כדי לדבר בנחת ולא באמצע משהו, אפשר לקבוע שיחת הדגמה כבר עכשיו.';
+    var a=document.createElement('a');a.className='pill y bk';a.href=u;a.target='_blank';a.rel='noopener';a.textContent='לקביעת שיחת הדגמה של חצי שעה';
+    a.addEventListener('click',function(){try{window.fbq&&fbq('trackCustom','BookDemoClick')}catch(x){}});
+    ok.appendChild(t);ok.appendChild(a);
+  }
   if(CONFIG.LEAD_ENDPOINT){
     fetch(CONFIG.LEAD_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data),keepalive:true})
       .then(function(r){if(!r.ok)throw 0;return r.json().catch(function(){return {}})})
       .then(function(j){try{window.fbq&&fbq('track','Lead')}catch(e){};
         var msg='תודה, קיבלנו. הכללים לקלוד בדרך למייל שלכם, ונחזור אליכם בהקדם. אם המייל לא מגיע תוך דקה, כדאי לבדוק בספאם.';
         if(j&&j.sent===false)msg=j.testMode?'קיבלנו, תודה. (מצב בדיקה: המייל נשלח רק לכתובות מאושרות לבדיקה, ולכתובת הזו הוא לא נשלח.)':'תודה, קיבלנו. המייל לא נשלח בגלל תקלה, ונשלח לכם את הכללים בהקדם.';
-        done(msg);$$('#leadForm input,#leadForm textarea').forEach(function(e){e.disabled=true})})
+        done(msg);bookOffer(name,mail,phone);$('#send').style.display='none';$$('#leadForm input,#leadForm textarea').forEach(function(e){e.disabled=true})})
       .catch(function(){btn.disabled=false;done('משהו השתבש בשליחה. אפשר לנסות שוב.')});
   }else{
     btn.disabled=false;
