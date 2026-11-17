@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UOS Privacy Policy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap">
+<style>
+:root{--ink:#14181f;--muted:#4b5563;--link:#0A6F86;--soft:#f3f5f7}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font:17px/1.65 "Fredoka",system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+main{max-width:46rem;margin:0 auto;padding:2.5rem 1.25rem 4rem}
+header img{height:34px;width:auto}
+h1{font-weight:700;font-size:2rem;line-height:1.2;margin:1.5rem 0 .25rem}
+h2{font-weight:600;font-size:1.25rem;margin:2.25rem 0 .5rem}
+h3{font-weight:600;font-size:1.05rem;margin:1.25rem 0 .25rem}
+p,li{margin:.4rem 0}
+a{color:var(--link)}
+.muted{color:var(--muted)}
+.table{overflow-x:auto}
+table{border-collapse:collapse;width:100%;margin:.75rem 0;font-size:.95rem}
+th,td{text-align:left;vertical-align:top;padding:.55rem .7rem}
+tr:nth-child(odd) td{background:var(--soft)}
+th{font-weight:600}
+</style>
+</head>
+<body>
+<main>
+<header><a href="https://uos.co.il/"><img src="/img/uos-on-light.svg" alt="UOS"></a></header>
+<h1>UOS Privacy Policy</h1>
+<p class="muted">Effective date: 17 November 2026</p>
+
+<p>UOS (<a href="https://uos.co.il">https://uos.co.il</a>) is a team of AI assistants that runs on a business's own computer and works with the business's own tools. It is operated by Ubiz Marketing Agency ("UBIZ", "we"), Israel. On Meta's login and settings screens it appears as "UOS by UBIZ".</p>
+<p>This policy covers the data UOS receives when a business ("customer") connects its own advertising account to UOS through our connection service at <a href="https://connect.uos.co.il">https://connect.uos.co.il</a>.</p>
+
+<h2>1. Who is responsible</h2>
+<p>The customer is the controller of the data in its advertising accounts. UBIZ processes that data only on the customer's behalf, to provide the features the customer turned on. Each customer's connection is separate from every other customer's.</p>
+
+<h2>2. Data we receive from Meta</h2>
+<h3>When a customer connects</h3>
+<p>The person connecting signs in with Facebook Login for Business and chooses which ad accounts to share with UOS. Meta then gives UOS an access token. We store:</p>
+<ul>
+<li>The access token, encrypted (section 6).</li>
+<li>For each shared ad account: its ID, name, currency, time zone, status, and the ID and name of the business portfolio that owns it.</li>
+<li>The ID of the user or business integration that granted access, the permissions granted, and when.</li>
+</ul>
+<h3>While an ad account is connected</h3>
+<ul>
+<li>Campaigns, ad sets and ads in that account: ID, name, status, objective, optimization goal and budget.</li>
+<li>Performance per ad for yesterday, the last 7 days and the last 30 days: amount spent, impressions, reach, clicks, click-through rate, cost per click, frequency, and results such as leads, purchases, registrations and landing page views, with the cost of each.</li>
+</ul>
+<p>We do not request or receive data about individual people: no audience or customer lists, no lead form answers, no comments or messages, and no profile data beyond the ID of the person or integration that connected the account.</p>
+
+<h3>The permissions we ask for, and why</h3>
+<div class="table"><table>
+<tr><th>Permission</th><th>What UOS uses it for</th></tr>
+<tr><td>ads_read</td><td>Read the campaigns, ad sets, ads and performance of the ad accounts the customer shared, so the customer and its assistant can see how they perform</td></tr>
+<tr><td>ads_management</td><td>Pause or resume a campaign, ad set or ad, or change its budget, and only after the business owner approves that specific change in UOS</td></tr>
+<tr><td>business_management</td><td>List the ad accounts the person manages through a business portfolio, so the customer can choose which to connect</td></tr>
+</table></div>
+
+<h2>3. How we use it</h2>
+<ul>
+<li>To show the customer the performance of its ad accounts inside its own UOS.</li>
+<li>To let the customer's UOS assistant prepare written suggestions, such as pausing an ad that spends without results or moving budget to an ad set that performs better.</li>
+<li>To apply a suggested change only after the business owner approves that exact change on the phone paired with UOS. The approval screen shows the object, the current value and the new value. Without that approval nothing is changed.</li>
+</ul>
+<p>UOS never creates campaigns, ads or audiences, never changes payment methods or account settings, and cannot raise a budget to more than twice its current value in one change. We do not sell data, use it for our own advertising, build profiles, or share it with anyone other than the providers in section 4.</p>
+
+<h2>4. Where the data goes</h2>
+<div class="table"><table>
+<tr><th>Where</th><th>What happens there</th></tr>
+<tr><td>Our connection service (Cloudflare, Inc., database in the European Union)</td><td>Stores the encrypted access token and the list of shared ad accounts. It requests data from Meta when the customer's UOS computer asks for it, and passes it on without storing it. It keeps a record of each change it made or refused (section 5).</td></tr>
+<tr><td>The customer's own computer</td><td>Receives the campaign and performance data and keeps it in the customer's UOS business folder, under the customer's control. The customer's assistants read it there with Claude, an AI model by Anthropic, using the customer's own Claude subscription and under the customer's own agreement with Anthropic.</td></tr>
+</table></div>
+<p>UBIZ itself does not send data received from Meta to any AI model, and the access token never leaves our connection service.</p>
+
+<h2>5. How long we keep it</h2>
+<div class="table"><table>
+<tr><th>Data</th><th>Retention</th></tr>
+<tr><td>Access token and list of shared ad accounts</td><td>While the account is connected. Deleted immediately when the customer disconnects in UOS, removes "UOS by UBIZ" from its Meta business settings, ends its UOS subscription, or when Meta tells us the token is no longer valid</td></tr>
+<tr><td>Campaign and performance data on our connection service</td><td>Not stored. Passed to the customer's computer when requested</td></tr>
+<tr><td>Record of each change made or refused (object, action, value before and after, time, and a reference to the owner's approval)</td><td>12 months, so the customer can see what was changed in its account</td></tr>
+<tr><td>Records of deletion requests from Meta</td><td>12 months</td></tr>
+</table></div>
+<p>Data on the customer's own computer stays under the customer's control and is deleted by the customer.</p>
+
+<h2>6. Security</h2>
+<p>Access tokens are encrypted at rest with a key kept separately from the database, so a copy of the database alone cannot open any account. Tokens are never sent to the customer's computer or browser. Every request from a customer's computer is signed with a key that exists only on that computer, and the connection service accepts only computers we registered. The service can perform only the reading and the three kinds of changes described in section 3, whatever it is asked. All traffic is encrypted with HTTPS, and every notification from Meta is verified with Meta's signature.</p>
+
+<h2>7. Access and deletion</h2>
+<ul>
+<li>Disconnect the ad account in UOS. The token and the account list are deleted at once.</li>
+<li>Or remove "UOS by UBIZ" in your Meta business settings, under Integrations, or in your Facebook settings under Business Integrations. Meta notifies us and we delete the token and the account list at once.</li>
+<li>Or ask us through the contact form at <a href="https://uos.co.il">https://uos.co.il</a>. We acknowledge a request within 5 business days and complete it within 30 days.</li>
+</ul>
+
+<h2>8. Requests from public authorities</h2>
+<p>We disclose data to a public authority only when the law requires it, after reviewing the legal basis of the request, and we disclose no more than the request lawfully requires.</p>
+
+<h2>9. Changes</h2>
+<p>If we change this policy we update the effective date above. If a change affects what we do with data from a connected account, we tell connected customers in UOS before it applies.</p>
+
+<p class="muted">Ubiz Marketing Agency, Israel</p>
+</main>
+</body>
+</html>
