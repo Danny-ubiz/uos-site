@@ -130,17 +130,14 @@ form{display:grid;gap:16px}
   <!-- בפעם הראשונה במכשיר -->
   <div id="first" hidden>
     <div style="display:grid;gap:16px">
-      <p class="lead">בפעם הראשונה במכשיר הזה צריך את הקישור למערכת שלכם. מאז המכשיר יזכור אותו, ותיכנסו מכאן.</p>
-      <ol class="steps" aria-label="כניסה ראשונה">
-        <li class="now"><span class="n">1</span><span><b>פתחו את הקישור שקיבלתם בהתקנה</b><small>או הדביקו אותו כאן למטה</small></span></li>
-        <li><span class="n">2</span><span><b>היכנסו במסך שנפתח</b><small>בפנים או בטביעת אצבע מהטלפון המצומד, או בסיסמה ובקוד ממחשב אחר</small></span></li>
-      </ol>
+      <p class="lead">נכנסים עם המייל שלכם. נשלח אליו קוד, ומשם עוברים למערכת שלכם.</p>
+      <a class="btn" href="https://app.uos.co.il/">כניסה עם המייל</a>
+      <p class="note">קיבלתם קישור בהתקנה? אפשר גם להדביק אותו כאן.</p>
       <form id="paste" autocomplete="off" novalidate>
         <div class="field"><label for="addr">הקישור למערכת שלכם</label>
         <input id="addr" name="addr" inputmode="url" spellcheck="false" autocapitalize="off" placeholder="מדביקים כאן את הקישור מההתקנה" required></div>
         <button class="btn" type="submit">המשך</button>
       </form>
-      <p class="note">אין לכם את הקישור? <a href="/#contact" style="color:var(--tq-deep);font-weight:800">כתבו לנו בטופס</a>, ונשלח אותו שוב.</p>
     </div>
   </div>
 
