@@ -43,7 +43,7 @@ th{font-weight:600}
 <p>The person connecting signs in with Facebook Login for Business and chooses which ad accounts to share with UOS. Meta then gives UOS an access token. We store:</p>
 <ul>
 <li>The access token, encrypted (section 6).</li>
-<li>For each shared ad account: its ID, name, currency, time zone, status, and the ID and name of the business portfolio that owns it.</li>
+<li>For each shared ad account: its ID, name, currency, time zone and status.</li>
 <li>The ID of the user or business integration that granted access, the permissions granted, and when.</li>
 </ul>
 <h3>While an ad account is connected</h3>
@@ -58,7 +58,6 @@ th{font-weight:600}
 <tr><th>Permission</th><th>What UOS uses it for</th></tr>
 <tr><td>ads_read</td><td>Read the campaigns, ad sets, ads and performance of the ad accounts the customer shared, so the customer and its assistant can see how they perform</td></tr>
 <tr><td>ads_management</td><td>Pause or resume a campaign, ad set or ad, or change its budget, and only after the business owner approves that specific change in UOS</td></tr>
-<tr><td>business_management</td><td>List the ad accounts the person manages through a business portfolio, so the customer can choose which to connect</td></tr>
 </table></div>
 
 <h2>3. How we use it</h2>
